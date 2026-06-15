@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\TestController;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
 
@@ -8,28 +8,29 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/api/v1/products', [
-    ProductController::class,
+Route::get('/products', [
+    TestController::class,
     'getProducts'
 ]);
 
-Route::get('/api/v1/products/{id}', [
-    ProductController::class,
-    'getProductItem'
+Route::get('/products/{id}', [
+    TestController::class,
+    'getProductById'
 ]);
 
-Route::post('/api/v1/products', [
-    ProductController::class,
+Route::post('/products', [
+    TestController::class,
     'createProduct'
 ])->withoutMiddleware([VerifyCsrfToken::class]);
 
-Route::delete('/api/v1/products/{id}', [
-    ProductController::class,
+Route::patch('/products/{id}', [
+    TestController::class,
+    'updateProduct'
+])->withoutMiddleware([VerifyCsrfToken::class]);
+
+Route::delete('/products/{id}', [
+    TestController::class,
     'deleteProduct'
 ])->withoutMiddleware([VerifyCsrfToken::class]);
 
-Route::patch('/api/v1/products/{id}', [
-    ProductController::class,
-    'updateProduct'
-])->withoutMiddleware([VerifyCsrfToken::class]);
 

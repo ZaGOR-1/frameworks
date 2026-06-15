@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Controller;
+namespace App\Http\Controllers;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Attribute\Route;
+use function response;
 
-final class TestController extends AbstractController
+class TestController extends Controller
 {
 
     public const DATA = [
@@ -39,25 +37,33 @@ final class TestController extends AbstractController
         ]
     ];
 
-    #[Route('/products', name: 'get_products', methods: ['GET'])]
+    /**
+     * @return Response
+     */
     public function getProducts(): Response
     {
-        return new JsonResponse(self::DATA);
+        return response()->json(self::DATA, Response::HTTP_OK);
     }
 
-    #[Route('/products/{id}', name: 'get_product_by_id', methods: ['GET'])]
+    /**
+     * @param string $id
+     * @return Response
+     */
     public function getProductById(string $id): Response
     {
         foreach (self::DATA as $product) {
             if ($product['id'] === $id) {
-                return new JsonResponse($product);
+                return response()->json($product, Response::HTTP_OK);
             }
         }
 
-        return new JsonResponse();
+        return response()->json([], Response::HTTP_OK);
     }
 
-    #[Route('/products', name: 'create_product', methods: ['POST'])]
+    /**
+     * @param Request $request
+     * @return Response
+     */
     public function createProduct(Request $request): Response
     {
         $data = json_decode($request->getContent(), true);
@@ -66,10 +72,14 @@ final class TestController extends AbstractController
 
         $data['id'] = $id;
 
-        return new JsonResponse($data, Response::HTTP_CREATED);
+        return response()->json($data, Response::HTTP_CREATED);
     }
 
-    #[Route('/products/{id}', name: 'update_product', methods: ['PATCH'])]
+    /**
+     * @param string $id
+     * @param Request $request
+     * @return Response
+     */
     public function updateProduct(string $id, Request $request): Response
     {
         $data = json_decode($request->getContent(), true);
@@ -98,15 +108,18 @@ final class TestController extends AbstractController
             $oldProduct['price'] = $data['price'];
         }
 
-        return new JsonResponse($oldProduct);
+        return response()->json($oldProduct, Response::HTTP_OK);
     }
 
-    #[Route('/products/{id}', name: 'delete_product', methods: ['DELETE'])]
+    /**
+     * @param string $id
+     * @return Response
+     */
     public function deleteProduct(string $id): Response
     {
         foreach (self::DATA as $product) {
             if ($product['id'] === $id) {
-                return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+                return response()->json(null, Response::HTTP_NO_CONTENT);
             }
         }
 
